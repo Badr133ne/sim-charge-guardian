@@ -2,7 +2,7 @@
 import React from "react";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
-import { Sync } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { toast } from "sonner";
 
 export default function SyncFeature() {
@@ -23,7 +23,7 @@ export default function SyncFeature() {
       </CardContent>
       <CardFooter>
         <Button onClick={handleSync} className="w-full" variant="outline">
-          <Sync className="mr-2 h-4 w-4" />
+          <RefreshCw className="mr-2 h-4 w-4" />
           Sync Recharge Data
         </Button>
       </CardFooter>

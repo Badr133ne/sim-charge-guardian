@@ -42,4 +42,20 @@ export interface AppState {
   currentSimId: string | null;
   recharges: Recharge[];
   balances: Record<string, SimBalance>;
+  
+  // Add missing methods to fix TypeScript errors
+  addSimCard: (number: string, name: string) => string;
+  setCurrentSim: (id: string) => void;
+  updateSimCard: (id: string, data: Partial<SimCard>) => void;
+  deleteSimCard: (id: string) => void;
+  addRecharge: (recharge: Omit<Recharge, "id" | "createdAt">) => string;
+  updateRecharge: (id: string, data: Partial<Recharge>) => void;
+  deleteRecharge: (id: string) => void;
+  updateSimBalance: (simId: string, balance: SimBalance) => void;
+  getSimById: (id: string | null) => SimCard | null;
+  getCurrentSim: () => SimCard | null;
+  getRechargesBySimAndDate: (simId: string, date: string) => Recharge[];
+  getSimBalance: (simId: string) => SimBalance | null;
+  getTotalsByDate: (simId: string, date: string) => { total: number, user1Total: number, user2Total: number };
+  getUndeclaredDifference: (simId: string, date: string) => number | null;
 }
