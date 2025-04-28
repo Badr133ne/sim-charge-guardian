@@ -1,9 +1,10 @@
-
 export interface SimCard {
   id: string;
   number: string;
   name: string;
   createdAt: string;
+  user1Number?: string;
+  user2Number?: string;
 }
 
 export interface SimBalance {

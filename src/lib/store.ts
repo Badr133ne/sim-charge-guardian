@@ -1,4 +1,3 @@
-
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
@@ -12,12 +11,14 @@ const useStore = create<AppState>()(
       recharges: [],
       balances: {},
       
-      addSimCard: (number: string, name: string) => {
+      addSimCard: (number: string, name: string, user1Number: string, user2Number: string) => {
         const newSimCard: SimCard = {
           id: uuidv4(),
           number,
           name,
           createdAt: new Date().toISOString(),
+          user1Number,
+          user2Number,
         };
         
         set((state) => ({
@@ -115,6 +116,8 @@ const useStore = create<AppState>()(
       
       getTotalsByDate: (simId: string, date: string) => {
         const recharges = get().getRechargesBySimAndDate(simId, date);
+        const sim = get().getSimById(simId);
+        
         const total = recharges.reduce((sum, recharge) => sum + recharge.amount, 0);
         const user1Total = recharges
           .filter((recharge) => recharge.forUser1)
@@ -123,7 +126,13 @@ const useStore = create<AppState>()(
           .filter((recharge) => recharge.forUser2)
           .reduce((sum, recharge) => sum + recharge.amount, 0);
         
-        return { total, user1Total, user2Total };
+        return { 
+          total, 
+          user1Total, 
+          user2Total,
+          user1Number: sim?.user1Number || 'User 1',
+          user2Number: sim?.user2Number || 'User 2',
+        };
       },
       
       getUndeclaredDifference: (simId: string, date: string) => {

@@ -1,4 +1,3 @@
-
 import React, { useState } from "react";
 import { format } from "date-fns";
 import { Calendar as CalendarIcon, Plus } from "lucide-react";
@@ -25,7 +24,9 @@ export default function RechargeHistory() {
   
   const formattedDate = selectedDate ? format(selectedDate, "yyyy-MM-dd") : format(new Date(), "yyyy-MM-dd");
   const recharges = currentSimId ? getRechargesBySimAndDate(currentSimId, formattedDate) : [];
-  const { total, user1Total, user2Total } = currentSimId ? getTotalsByDate(currentSimId, formattedDate) : { total: 0, user1Total: 0, user2Total: 0 };
+  const { total, user1Total, user2Total, user1Number, user2Number } = currentSimId ? 
+    getTotalsByDate(currentSimId, formattedDate) : 
+    { total: 0, user1Total: 0, user2Total: 0, user1Number: 'User 1', user2Number: 'User 2' };
 
   const handleEditClick = (recharge: Recharge) => {
     setCurrentRecharge(recharge);
@@ -84,7 +85,9 @@ export default function RechargeHistory() {
         <RechargeTotals 
           user1Total={user1Total} 
           user2Total={user2Total} 
-          total={total} 
+          total={total}
+          user1Number={user1Number}
+          user2Number={user2Number}
         />
       </CardFooter>
 
