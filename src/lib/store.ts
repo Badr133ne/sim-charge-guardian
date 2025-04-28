@@ -1,7 +1,9 @@
+
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
 import { v4 as uuidv4 } from "uuid";
 import { AppState, Recharge, SimBalance, SimCard } from "@/types";
+import { toast } from "sonner";
 
 const useStore = create<AppState>()(
   persist(
@@ -10,8 +12,9 @@ const useStore = create<AppState>()(
       currentSimId: null,
       recharges: [],
       balances: {},
+      user: null,
       
-      addSimCard: (number: string, name: string, user1Number: string, user2Number: string) => {
+      addSimCard: (number: string, name: string, user1Number = 'User 1', user2Number = 'User 2') => {
         const newSimCard: SimCard = {
           id: uuidv4(),
           number,
@@ -142,6 +145,63 @@ const useStore = create<AppState>()(
         const { total } = get().getTotalsByDate(simId, date);
         return balance.credit - total;
       },
+      
+      // Authentication methods
+      login: (username: string) => {
+        set({ 
+          user: {
+            id: uuidv4(),
+            username,
+            isLoggedIn: true
+          }
+        });
+        toast.success(`Welcome, ${username}!`);
+      },
+      
+      logout: () => {
+        set({ user: null });
+        toast.info("You've been logged out");
+      },
+      
+      isLoggedIn: () => {
+        return get().user !== null && get().user?.isLoggedIn === true;
+      },
+      
+      // Real SIM balance fetch function (mobile-only)
+      fetchRealSimBalance: async () => {
+        const { currentSimId } = get();
+        
+        if (!currentSimId) {
+          toast.error("Please select a SIM card first");
+          return;
+        }
+        
+        try {
+          // Check if running in a browser or mobile environment
+          if (typeof navigator === "undefined" || !navigator.permissions) {
+            toast.error("This feature is only available on mobile devices");
+            return;
+          }
+
+          // Most browsers don't provide direct access to SIM information
+          // This would typically require a Capacitor/Cordova plugin in a real mobile app
+          toast.info("Attempting to read SIM balance...");
+          
+          // In reality, this is a placeholder - in a production app you would:
+          // 1. Use a Capacitor plugin to access the SIM information
+          // 2. Or use a USSD code to query the balance (carrier-specific)
+          // 3. Or parse SMS messages containing balance information
+          
+          setTimeout(() => {
+            toast.info("For security reasons, browsers cannot directly access SIM card data");
+            toast.info("This would require a Capacitor/Cordova plugin in a production app");
+          }, 2000);
+          
+        } catch (error) {
+          console.error("Error accessing SIM information:", error);
+          toast.error("Could not access SIM information");
+        }
+      }
     }),
     {
       name: "sim-recharge-manager",
